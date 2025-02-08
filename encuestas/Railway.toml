@@ -1,0 +1,43 @@
+[build]
+  builder = "npm"
+
+[env]
+  NIXPACKS_BUILD_CMD = "apt-get update && apt-get install -y php-cli curl git unzip && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer"
+  NIXPACKS_PHP_CHECK = "php -v && which php"
+  NIXPACKS_COMPOSER_INSTALL = "curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer"
+  NIXPACKS_COMPOSER_CHECK = "php -v && which php && composer -v && which composer"
+  NIXPACKS_COMPOSER_INSTALL_CMD = "php /usr/local/bin/composer install"
+  NIXPACKS_YARN_INSTALL = "yarn install"
+  NIXPACKS_YARN_PROD = "yarn prod"
+  NIXPACKS_ARTISAN_OPTIMIZE = "php artisan optimize"
+  NIXPACKS_ARTISAN_CONFIG_CACHE = "php artisan config:cache"
+  NIXPACKS_ARTISAN_VIEW_CACHE = "php artisan view:cache"
+  NIXPACKS_ARTISAN_MIGRATE = "php artisan migrate --force --seed"
+
+[[build.steps]]
+  name = "Install Composer"
+  command = "$NIXPACKS_COMPOSER_INSTALL"
+  
+[[build.steps]]
+  name = "Check PHP"
+  command = "$NIXPACKS_PHP_CHECK"
+
+[[build.steps]]
+  name = "Check Composer"
+  command = "$NIXPACKS_COMPOSER_CHECK"
+
+[[build.steps]]
+  name = "Install Composer Dependencies"
+  command = "$NIXPACKS_COMPOSER_INSTALL_CMD"
+
+[[build.steps]]
+  name = "Install Yarn Dependencies"
+  command = "$NIXPACKS_YARN_INSTALL"
+
+[[build.steps]]
+  name = "Build Yarn"
+  command = "$NIXPACKS_YARN_PROD"
+
+[[build.steps]]
+  name = "Run Artisan Commands"
+  command = "$NIXPACKS_ARTISAN_OPTIMIZE && $NIXPACKS_ARTISAN_CONFIG_CACHE && $NIXPACKS_ARTISAN_VIEW_CACHE && $NIXPACKS_ARTISAN_MIGRATE"
